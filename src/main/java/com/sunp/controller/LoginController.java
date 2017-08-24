@@ -1,6 +1,9 @@
 package com.sunp.controller;
 
 import com.sunp.service.LoginService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +24,17 @@ public class LoginController {
 
     @RequestMapping(value = "/login",method = RequestMethod.GET)
     @ResponseBody
-    public String login(){
+    public String login(String username, String password){
         logger.info("sunp/login init");
-        if(loginService.login("","")){
-            return "success";
-        }
+//        String username="sunpeng";
+//        String password="password";
+
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+        token.setRememberMe(true);
+
+        Subject currentUser = SecurityUtils.getSubject();
+        currentUser.login(token);
+
         return "fail";
     }
 }
