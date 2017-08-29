@@ -54,16 +54,9 @@ public class LoginController {
         Subject currentUser = SecurityUtils.getSubject();
         try {
             currentUser.logout();
-        } catch (UnknownAccountException uae) {
-            return "unknown account";
-        } catch (IncorrectCredentialsException ice) {
-            return "认证失败";
-        } catch (LockedAccountException lae) {
-            return "账户已锁定";
-        } catch (ExcessiveAttemptsException eae) {
-            return "登录失败次数过多";
-        } catch (AuthenticationException ae) {
-            return ae.getMessage();
+        }catch (Exception e){
+            logger.error("loginOut 异常",e);
+            return "logout fail";
         }
         return "logout success";
     }
