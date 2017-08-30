@@ -31,9 +31,9 @@ public class myRealm extends AuthorizingRealm {
         System.out.print("验证当前Subject时获取到token：");
         System.out.println(ReflectionToStringBuilder.toString(token, ToStringStyle.MULTI_LINE_STYLE));
 
-        String jdbcAccountSalt="b93e50d8389262747e5b3d239b7fb6c8";
+        String jdbcAccountSalt="nBJRREq/zFQl7aG5o4z0PA==";
         String jdbcAccountName="sunpeng";
-        String jdbcAccountPassword="39fd24859dc62d90e51e9a6a27fda3eb";//sunpeng
+        String jdbcAccountPassword="PQA/UP40yaw2+inRXewvSJG6Q7QYiuycbvUoFEil9Vs=";//sunpeng
 
         if(jdbcAccountName.equals(token.getUsername())){
 
@@ -57,17 +57,21 @@ public class myRealm extends AuthorizingRealm {
     }
 
     private void credent(String password){
-//        RandomNumberGenerator rng = new SecureRandomNumberGenerator();
-//        Object salt = rng.nextBytes().toBase64();
-//        String hashedPasswordBase64 = new Sha256Hash(password, salt, 1024).toBase64();
-//        return hashedPasswordBase64;
 
-        String salt2 = new SecureRandomNumberGenerator().nextBytes().toHex();
-        int hashIterations = 1024;
-        SimpleHash hash = new SimpleHash("MD5", password, salt2, hashIterations);
-        String encodedPassword = hash.toHex();
+        //散列随机数
+        String salt = new SecureRandomNumberGenerator().nextBytes().toBase64();
+        //散列迭代次数
+        int hashIterations=1024;
+
+//       SimpleHash hash = new SimpleHash("SHA-256", password, salt, hashIterations);
+
+        /*
+        shiro.xml 中  storedCredentialsHexEncoded=true 则需要 .toHex()
+        shiro.xml 中  storedCredentialsHexEncoded=false 则需要 .toBase64()
+         */
+        String encodedPassword = new Sha256Hash(password, salt, hashIterations).toBase64();
         System.out.println(encodedPassword);
-        System.out.println(salt2);
+        System.out.println(salt);
     }
 
     public static void main(String[] args) {

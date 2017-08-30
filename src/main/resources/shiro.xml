@@ -47,11 +47,11 @@
         <property name="credentialsMatcher">
             <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
                 <!-- 加密算法为MD5 -->
-                <property name="hashAlgorithmName" value="MD5"></property>
+                <property name="hashAlgorithmName" value="SHA-256"></property>
                 <!-- 加密次数 -->
                 <property name="hashIterations" value="1024"></property>
-                <!--是否存储散列后的密码为16进制-->
-                <property name="storedCredentialsHexEncoded" value="true"></property>
+                <!--是否存储散列后的密码为16进制，为 true：.toHex()，为 false：.toBase64()-->
+                <property name="storedCredentialsHexEncoded" value="false"></property>
             </bean>
         </property>
     </bean>
