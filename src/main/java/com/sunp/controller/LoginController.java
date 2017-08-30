@@ -45,10 +45,11 @@ public class LoginController {
         } catch (AuthenticationException ae) {
             return ae.getMessage();
         }
-        return "login success";
+        return "login success登录成功";
     }
 
-    @RequestMapping(value = "/loginOut", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+//    @RequestMapping(value = "/loginOut", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/loginOut", method = RequestMethod.GET)
     @ResponseBody
     public String loginOut() {
         Subject currentUser = SecurityUtils.getSubject();

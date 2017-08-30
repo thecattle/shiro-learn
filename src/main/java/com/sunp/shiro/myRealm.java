@@ -31,6 +31,7 @@ public class myRealm extends AuthorizingRealm {
         System.out.print("验证当前Subject时获取到token：");
         System.out.println(ReflectionToStringBuilder.toString(token, ToStringStyle.MULTI_LINE_STYLE));
 
+        //模拟数据库的用户信息
         String jdbcAccountSalt="nBJRREq/zFQl7aG5o4z0PA==";
         String jdbcAccountName="sunpeng";
         String jdbcAccountPassword="PQA/UP40yaw2+inRXewvSJG6Q7QYiuycbvUoFEil9Vs=";//sunpeng
@@ -39,7 +40,8 @@ public class myRealm extends AuthorizingRealm {
 
             /*
             通过HashedCredentialsMatcher类中的doCredentialsMatch进行认证
-            根据 token 里的值  和  构造的 authcInfo 的值进行比对
+            根据 token 里的值  和  构造的 authcInfo 的值进行比对.
+            如果实现这个SaltedAuthenticationInfo接口的话，可以 get 到 salt，但是我觉得不好，不能把 salt 暴露出去
              */
             AuthenticationInfo authcInfo = new SimpleAuthenticationInfo(
                     jdbcAccountName,
@@ -56,6 +58,11 @@ public class myRealm extends AuthorizingRealm {
         return null;
     }
 
+
+    /**
+     * 模拟创建用户时候存入的密码和盐
+     * @param password
+     */
     private void credent(String password){
 
         //散列随机数
