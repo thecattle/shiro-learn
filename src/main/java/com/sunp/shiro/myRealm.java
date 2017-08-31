@@ -9,6 +9,7 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 
@@ -48,7 +49,6 @@ public class myRealm extends AuthorizingRealm {
                     jdbcAccountPassword,
                     ByteSource.Util.bytes(jdbcAccountSalt),
                     this.getName());
-
             return authcInfo;
         }
         if ("sunp".equals(token.getUsername())){

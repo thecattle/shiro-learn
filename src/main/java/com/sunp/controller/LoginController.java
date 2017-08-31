@@ -3,6 +3,8 @@ package com.sunp.controller;
 import com.sunp.service.LoginService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.session.SessionListener;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +72,6 @@ public class LoginController {
 
         map.put("isRemembered", currentUser.isRemembered() ? "session过期了，我是被记住的" : currentUser.isRemembered());
         map.put("isAuthenticated", currentUser.isAuthenticated() ? "session 还在，我是被认证的" : currentUser.isAuthenticated());
-
 
         //登录过，可以看到自己的名字
         //session 过期的时候，会触发当前判断，前提是登录过的用户设置了token.setRememberMe(true);

@@ -14,12 +14,37 @@
         -->
         <!-- <property name="sessionMode" value="native"/> -->
 
+        <!--配置 session 管理-->
+        <property name="sessionManager" ref="sessionManager"></property>
+        <!--配置 记住我-->
+        <property name="rememberMeManager" ref="rememberMeManager"></property>
         <!-- 配置多个Realm -->
         <property name="authenticator" ref="authenticator"></property>
 
     </bean>
 
+    <!--rememberMeManager管理 配置-->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <property name="cookie">
+            <bean class="org.apache.shiro.web.servlet.SimpleCookie">
+                <!--设置超时时间 单位 秒，为了测试此处设置为 60s-->
+                <constructor-arg value="shiro-cookie"></constructor-arg>
+                <property name="maxAge" value="60"></property>
+                <property name="httpOnly" value="true"></property>
+            </bean>
+        </property>
+    </bean>
 
+    <!--session管理 配置-->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <!--session 过期时间 单位 毫秒，为了测试此处设置为 20s-->
+        <property name="globalSessionTimeout" value="20000"></property>
+
+        <!--有需要可以自行配置-->
+        <!--<property name="cacheManager" ref="xxxx"></property>-->
+        <!--有需要可以自行配置-->
+        <!--<property name="sessionDAO" ref="xxx"></property>-->
+    </bean>
 
     <!-- 配置多个Realm -->
     <bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
@@ -104,6 +129,7 @@
     <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
     <!-- http://shiro.apache.org/static/1.2.1/apidocs/org/apache/shiro/spring/LifecycleBeanPostProcessor.html -->
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
 
     <!--
     开启Shiro的注解（比如@RequiresRoles、@RequiresPermissions）
