@@ -87,4 +87,31 @@ public class LoginController {
 
         return map;
     }
+
+    @RequestMapping(value = "/unauthorized", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> unauthorized() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", "unauthorized");
+        map.put("code", "401");
+        return map;
+    }
+
+    @RequestMapping(value = "/loginSuccess", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> loginSuccess() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", "loginSuccess");
+        map.put("code", "200");
+        return map;
+    }
+
+    @RequestMapping(value = "/toLogin", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> toLogin() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", "prepare login");
+        map.put("code", "404");
+        return map;
+    }
 }

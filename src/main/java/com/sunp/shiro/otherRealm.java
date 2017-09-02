@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.ModularRealmAuthorizer;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -26,16 +27,15 @@ public class otherRealm extends AuthorizingRealm{
                 info.addStringPermissions(permissions);
                 return info;
             }
-            if ("sunpeng".equals(username)){
-                List<String> roles=new ArrayList<>();
-                roles.add("admin");
-                List<String> permissions=new ArrayList<>();
-                permissions.add("admin:list");
-                info.addRoles(roles);
-                info.addStringPermissions(permissions);
-                return info;
-            }
-
+//            if ("sunpeng".equals(username)){
+//                List<String> roles=new ArrayList<>();
+//                roles.add("admin");
+//                List<String> permissions=new ArrayList<>();
+//                permissions.add("admin:list");
+//                info.addRoles(roles);
+//                info.addStringPermissions(permissions);
+//                return info;
+//            }
 
             return null;
     }
