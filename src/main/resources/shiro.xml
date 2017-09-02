@@ -4,9 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <!-- 指定Shiro验证用户登录的类为自定义的Realm（若有多个Realm，可用[realms]属性代替） -->
-        <!--<property name="realm">-->
-                <!--<ref bean="myRealm"/>-->
-        <!--</property>-->
+        <property name="realm">
+                <ref bean="otherRealm"/>
+        </property>
 
         <!--
         Shiro默认会使用Servlet容器的Session，此时修改超时时间的话，可以修改web.xml或者这里自定义的MyRealm
@@ -19,17 +19,16 @@
         <!--配置 记住我-->
         <property name="rememberMeManager" ref="rememberMeManager"></property>
         <!-- 配置多个Realm -->
-        <property name="authenticator" ref="authenticator"></property>
-
+        <!--<property name="authenticator" ref="authenticator"></property>-->
     </bean>
 
     <!--rememberMeManager管理 配置-->
     <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
         <property name="cookie">
             <bean class="org.apache.shiro.web.servlet.SimpleCookie">
-                <!--设置超时时间 单位 秒，为了测试此处设置为 60s-->
+                <!--设置超时时间 单位 秒，一天=86400-->
                 <constructor-arg value="shiro-cookie"></constructor-arg>
-                <property name="maxAge" value="60"></property>
+                <property name="maxAge" value="86400"></property>
                 <property name="httpOnly" value="true"></property>
             </bean>
         </property>
@@ -37,8 +36,8 @@
 
     <!--session管理 配置-->
     <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
-        <!--session 过期时间 单位 毫秒，为了测试此处设置为 20s-->
-        <property name="globalSessionTimeout" value="20000"></property>
+        <!--session 过期时间 单位 毫秒，2400000=40min-->
+        <property name="globalSessionTimeout" value="2400000"></property>
 
         <!--有需要可以自行配置-->
         <!--<property name="cacheManager" ref="xxxx"></property>-->
@@ -116,14 +115,13 @@
         authc：该过滤器下的页面必须验证后才能访问，它是内置的org.apache.shiro.web.filter.authc.FormAuthenticationFilter
         注意：对于相似的资源，需要将anon的设置放在authc前面，anon才会生效，因为Shiro是从上往下匹配URL的，匹配成功便不再匹配了
         -->
-        <!--<property name="filterChainDefinitions">-->
-        <!--<value>-->
-        <!--/main**           = authc-->
-        <!--/admin/list**     = authc,perms[admin:manage]-->
-        <!--/user/info-anon** = anon-->
-        <!--/user/info**      = authc-->
-        <!--</value>-->
-        <!--</property>-->
+        <property name="filterChainDefinitions">
+            <value>
+                /sunp/** = anon
+                /admin/** = authc,roles[admin],perms[admin:list]
+                /manager/** = authc,roles[manager],perms[manager:list]
+            </value>
+        </property>
     </bean>
 
     <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
@@ -13,9 +14,36 @@ import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 public class myRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        String username =(String) super.getAvailablePrincipal(principalCollection);
+        SimpleAuthorizationInfo info =new SimpleAuthorizationInfo();
+
+        if ("sunpeng".equals(username)){
+            List<String> roles=new ArrayList<>();
+            roles.add("admin");
+            List<String> permissions=new ArrayList<>();
+            permissions.add("admin:list");
+            info.addRoles(roles);
+            info.addStringPermissions(permissions);
+            return info;
+        }
+
+//        if ("sunpeng1".equals(username)){
+//            List<String> roles=new ArrayList<>();
+//            roles.add("manager");
+//            List<String> permissions=new ArrayList<>();
+//            permissions.add("manager:list");
+//            info.addRoles(roles);
+//            info.addStringPermissions(permissions);
+//            return info;
+//        }
+
 
         return null;
     }
