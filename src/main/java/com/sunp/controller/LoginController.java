@@ -1,11 +1,15 @@
 package com.sunp.controller;
 
 import com.sunp.service.LoginService;
+import com.sunp.shiro.MyShiroFilterFactoryBean;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.session.SessionListener;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.filter.mgt.DefaultFilterChainManager;
+import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
+import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,9 @@ public class LoginController {
 
     @Autowired
     private LoginService loginService;
+
+    @Autowired
+    private MyShiroFilterFactoryBean myShiroFilterFactoryBean;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
@@ -114,4 +121,60 @@ public class LoginController {
         map.put("code", "404");
         return map;
     }
+
+    @RequestMapping(value = "/getFilter", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, String> getFilter() {
+        return myShiroFilterFactoryBean.getFilterChainDefinitionMap();
+    }
+
+    @RequestMapping(value = "/updateFilter", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, String> updateFilter() {
+
+        Map<String,String> filterMap=new HashMap<>();
+        //将所有的路径都设置为不需要任何权限
+        filterMap.put("/**","anon");
+        updatePermission(filterMap);
+        return myShiroFilterFactoryBean.getFilterChainDefinitionMap();
+    }
+
+    /**
+     * 动态更新新的权限
+     * 以后要单独封装 service  现在先将就着用
+     * @param filterMap
+     */
+    public void updatePermission(Map<String,String> filterMap) {
+
+        synchronized (myShiroFilterFactoryBean) {
+
+            AbstractShiroFilter shiroFilter = null;
+
+            try {
+                shiroFilter = (AbstractShiroFilter) myShiroFilterFactoryBean.getObject();
+
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
+
+            // 获取过滤管理器
+            PathMatchingFilterChainResolver filterChainResolver = (PathMatchingFilterChainResolver) shiroFilter
+                    .getFilterChainResolver();
+            DefaultFilterChainManager manager = (DefaultFilterChainManager) filterChainResolver.getFilterChainManager();
+
+            // 清空初始权限配置
+            manager.getFilterChains().clear();
+            myShiroFilterFactoryBean.getFilterChainDefinitionMap().clear();
+
+            // 重新构建生成
+            Map<String, String> chains = myShiroFilterFactoryBean.getFilterChainDefinitionMap();
+            chains.putAll(filterMap);
+            for (Map.Entry<String, String> entry : filterMap.entrySet()) {
+                String url = entry.getKey();
+                String chainDefinition = entry.getValue().trim().replace(" ", "");
+                manager.createChain(url, chainDefinition);
+            }
+        }
+    }
+
 }
